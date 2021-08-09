@@ -1,22 +1,21 @@
-import moment from "moment";
 import { types } from "../types/types";
 
+// {
+//     id: new Date().getTime(),
+//     title: 'Cumpleaños',
+//     notes: 'Descripcion del cumpleaños',
+//     start: moment().toDate(),
+//     end: moment().add(2, 'hours').toDate(),
+//     bgColor: '#fafafa',
+//     user: {
+//         _id: '123',
+//         name: 'Rene',
+//     }
+// }
+
 const initialState = {
-    events: [
-        {
-            id: new Date().getTime(),
-            title: 'Cumpleaños',
-            notes: 'Descripcion del cumpleaños',
-            start: moment().toDate(),
-            end: moment().add(2, 'hours').toDate(),
-            bgColor: '#fafafa',
-            user: {
-                _id: '123',
-                name: 'Rene',
-            }
-        }
-    ],
-    activeEvent: null
+    events: [],
+    activeEvent: null,
 }
 
 export const calendarReducer = (state = initialState, action) => {
@@ -34,6 +33,13 @@ export const calendarReducer = (state = initialState, action) => {
                     action.payload,
                 ],
             };
+        case types.eventLoaded:
+            return {
+                ...state,
+                events: [
+                    ...action.payload,
+                ]
+            }
         case types.eventClearActiveNote:
             return {
                 ...state,
@@ -43,7 +49,7 @@ export const calendarReducer = (state = initialState, action) => {
             return {
                 ...state,
                 events: state.events.map(event => 
-                    event.id === action.payload.id
+                    event._id === action.payload._id
                         ? action.payload
                         : event
                 ),
@@ -52,9 +58,13 @@ export const calendarReducer = (state = initialState, action) => {
             return {
                 ...state,
                 events: state.events.filter(event => 
-                    event.id !== state.activeEvent.id
+                    event._id !== state.activeEvent._id
                 ),
                 activeEvent: null,
+            }
+        case types.eventLogoutUser:
+            return {
+                ...initialState
             }
         default:
             return state;
